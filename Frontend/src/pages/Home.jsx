@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getproducts } from "../redux/actions";
+import { getProducts } from "../redux/actions";
 import { Grid, Typography } from "@mui/material";
 import CardProduct from "../components/Product/CardProduct"; // ✅ Importamos el nuevo componente
 
@@ -11,7 +11,7 @@ const Home = () => {
 
 
   useEffect(() => {
-    dispatch(getproducts());
+    dispatch(getProducts());
   }, [dispatch]);
 
   const sortedProducts = [...products].sort((a, b) =>

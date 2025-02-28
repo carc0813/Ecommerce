@@ -1,9 +1,8 @@
-
-
-const { Router } = require("express");
+const express = require("express");
+const router = express.Router();
 const { getAllProducts, createProduct } = require("../controllers/productController");
 
-const router = Router();
+
 
 router.get("/", getAllProducts);
 router.post("/", createProduct);

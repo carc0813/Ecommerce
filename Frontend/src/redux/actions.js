@@ -78,7 +78,7 @@ export const resetAuthState = () => ({
   type: RESET_AUTH_STATE,
 });
 
-export const getproducts = () => async (dispatch) => {
+export const getProducts = () => async (dispatch) => {
   try {
     const res = await axios.get("http://localhost:3001/products");
     dispatch({

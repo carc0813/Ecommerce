@@ -41,6 +41,14 @@ module.exports = (sequelize) => {
     gender: {
       type: DataTypes.ENUM('men', 'women', 'kid', 'unisex'),
       allowNull: false
+    },
+    images:{
+           type:DataTypes.TEXT,
+           allowNull:false,         
     }
+
   }, { timestamps: false });
+
 };
+
+
