@@ -81,6 +81,7 @@ export const resetAuthState = () => ({
 export const getProducts = () => async (dispatch) => {
   try {
     const res = await axios.get("http://localhost:3001/products");
+    console.log("Productos recibidos:", res.data); // Debugging
     dispatch({
       type: GET_PRODUCTS_SUCCESS,
       payload: res.data,

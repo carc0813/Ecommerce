@@ -3,19 +3,27 @@ const { Product, Category } = require("../db");
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.findAll({
-      attributes: ["id", "title", "description", "price", "images"], // Asegúrate de incluir 'image'
+      attributes: ["id", "title", "description", "price", "images"], 
       include: {
         model: Category,
         attributes: ["name"],
       },
     });
-   // console.log(products)
-    res.status(200).json(products);
+
+    // Transformar las imágenes a URLs completas
+    const updatedProducts = products.map((product) => ({
+      ...product.toJSON(),
+      images: product.images.map(img => `http://localhost:3001/images/${img}`)
+    }));
+
+    res.status(200).json(updatedProducts);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al obtener los productos");
   }
 };
+
+
 
 const createProduct = async (req, res) => {
   try {

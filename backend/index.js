@@ -20,7 +20,9 @@
 const server = require("./src/app");
 const { conn } = require("./src/db");
 const preloadData = require('../backend/src/routes/seed');
+
 conn.sync({ force: true }).then(async () => {
+   //console.log("🔄 Precargando datos...");
   await preloadData();
   server.listen(3001, () => {
     

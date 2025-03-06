@@ -42,11 +42,10 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('men', 'women', 'kid', 'unisex'),
       allowNull: false
     },
-    images:{
-           type:DataTypes.TEXT,
-           allowNull:false,         
-    }
-
+    images: { 
+      type: DataTypes.ARRAY(DataTypes.STRING), // Almacenar como array de strings
+      allowNull: false 
+  },
   }, { timestamps: false });
 
 };

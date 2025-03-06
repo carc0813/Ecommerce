@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const routes = require('./routes/index.js');
-
+const path = require('path');
 require('./db.js');
 
 const server = express();
@@ -23,6 +23,11 @@ server.use((req, res, next) => {
 });
 
 server.use('/', routes);
+
+
+// Servir la carpeta 'images' de manera estática
+server.use('/images', express.static(path.join(__dirname, 'images')));
+
 
 // Error catching endware.
 server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

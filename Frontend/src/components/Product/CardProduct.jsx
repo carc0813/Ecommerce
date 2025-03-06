@@ -3,24 +3,51 @@ import { Card, CardContent, CardMedia, Typography, CardActions, Button } from "@
 
 const CardProduct = ({ product }) => {
   return (
-    <Card>
-      {/* Muestra la imagen si existe, de lo contrario, usa una de respaldo */}
+    <Card sx={{ maxWidth: 300, height: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      {/* Imagen del Producto */}
       <CardMedia
         component="img"
-        height="200"
-        images={product.images ? `/images/${product.images}` : "https://via.placeholder.com/200"}
+        height="180"
+        image={product.images?.[0] || "https://via.placeholder.com/200"}
         alt={product.title}
+        sx={{ objectFit: "cover" }}
       />
-      <CardContent>
-        <Typography variant="h5">{product.title || "Sin título"}</Typography>
-        <Typography variant="body2">{product.description || "Sin descripción"}</Typography>
-        <Typography variant="h6">${product.price !== undefined ? product.price : "0.00"}</Typography>
+
+      <CardContent sx={{ flexGrow: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        {/* Título */}
+        <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: "center" }}>
+          {product.title || "Sin título"}
+        </Typography>
+
+        {/* Descripción con Scroll */}
+        <Typography
+          variant="body2"
+          sx={{
+            maxHeight: "60px",
+            overflowY: "auto",
+            textAlign: "justify",
+            paddingRight: "5px",
+          }}
+        >
+          {product.description || "Sin descripción"}
+        </Typography>
+
+        {/* Precio */}
+        <Typography variant="h6" sx={{ textAlign: "center", marginTop: "auto" }}>
+          ${product.price?.toFixed(2) || "0.00"}
+        </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small" color="primary">Agregar al Carrito</Button>
+
+      {/* Botón */}
+      <CardActions sx={{ justifyContent: "center" }}>
+        <Button size="small" color="primary" variant="contained">
+          Agregar al Carrito
+        </Button>
       </CardActions>
     </Card>
   );
 };
 
 export default CardProduct;
+
+
