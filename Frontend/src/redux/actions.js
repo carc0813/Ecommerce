@@ -10,29 +10,38 @@ export const GET_PRODUCTS_FAIL = "GET_PRODUCTS_FAIL";
 export const  RESET_AUTH_STATE="RESET_AUTH_STATE";
 
 
+
 export const register = (userData) => async (dispatch) => {
   try {
-    const response = await axios.post("http://localhost:3001/users/register", userData, {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true // Permite cookies/sesiones si las usas
-    });
-  
+    const response = await axios.post(
+      "http://localhost:3001/users/register",
+      userData,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true, // Para permitir autenticación basada en cookies si es necesario
+      }
+    );
+
     dispatch({
       type: REGISTER_SUCCESS,
       payload: response.data,
     });
 
     return response; // Retornar la respuesta para manejarla en el frontend
-
   } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || "Error en el registro";
+    const errorStatus = error.response?.status || 500;
+
     dispatch({
       type: REGISTER_FAIL,
-      payload: error.response?.data || "Error en el registro",
+      payload: { message: errorMessage, status: errorStatus },
     });
 
     return Promise.reject(error);
   }
 };
+
 
 
 

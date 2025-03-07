@@ -1,5 +1,7 @@
 const { Product, Category } = require("../db");
 
+
+//me trae todos los productos de la base de datos
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.findAll({
@@ -10,7 +12,7 @@ const getAllProducts = async (req, res) => {
       },
     });
 
-    // Transformar las imágenes a URLs completas
+    // Transformar las imágenes a tipo json 
     const updatedProducts = products.map((product) => ({
       ...product.toJSON(),
       images: product.images.map(img => `http://localhost:3001/images/${img}`)
@@ -24,7 +26,7 @@ const getAllProducts = async (req, res) => {
 };
 
 
-
+//crear productos 
 const createProduct = async (req, res) => {
   try {
     const { name, price, categotyId } = req.body;

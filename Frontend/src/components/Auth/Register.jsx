@@ -19,17 +19,22 @@ const Register = () => {
   const { name, email, password, password2, role } = formData;
 
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
+  
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log("Datos enviados al backend:", formData); // 🔹 Agrega esto para verificar
     if (password !== password2) {
       alert("Las contraseñas no coinciden");
     } else {
-      dispatch(register({ name, email, password, role: "user" })); // 🔹 Asegurar que role se envía
+      console.log({ name, email, password, role }); // Verificar qué se envía
+      dispatch(register({ name, email, password, role }));
     }
   };
+  
   
 
   if (auth && auth.isAuthenticated) {
