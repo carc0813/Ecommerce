@@ -1,3 +1,4 @@
+const { mergeDefaults } = require("sequelize/lib/utils");
 const { User } = require("../db");
 const bcrypt = require("bcrypt");
 
@@ -9,7 +10,9 @@ const registerUser = async (req, res) => {
 
     // ❌ ERROR: Aquí se está incluyendo `password2` en la validación
     if (!name || !email || !password || !role) {
-      return res.status(400).json({ message: "Todos los campos son obligatorios." });
+      return res
+        .status(400)
+        .json({ message: "Todos los campos son obligatorios." });
     }
 
     // ✅ Solo verifica `password2` si está presente
@@ -19,7 +22,9 @@ const registerUser = async (req, res) => {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: "El usuario ya está registrado." });
+      return res
+        .status(400)
+        .json({ message: "El usuario ya está registrado." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -46,5 +51,33 @@ const registerUser = async (req, res) => {
   }
 };
 
+// Obtener todos los usuarios
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ["id", "name", "email", "role"],
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    res.status(500).json({ message: "Error en el servodor " });
+  }
+};
 
-module.exports = { registerUser };
+//eliminar usuario
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = User.findByPk(id);
+    if (!user) {
+      res.status(404).json({ message: "usuario no encontrado" });
+    }
+    await user.destroy();
+    res.status(200).json({ message: "usuario eliminado correctamete" });
+  } catch (error) {
+    console.error("Error al eliminar el usuario", error);
+    res.status(500).json({ message: "Error en el Servidor" });
+  }
+};
+
+module.exports = { registerUser, getAllUsers, deleteUser };

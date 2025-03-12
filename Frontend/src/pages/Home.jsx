@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../redux/actions";
 import { Grid, Typography } from "@mui/material";
 import CardProduct from "../components/Product/CardProduct"; // ✅ Importamos el nuevo componente
+import Footer from "../components/Layout/Footer";
+
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -31,6 +33,7 @@ const Home = () => {
       ) : (
         <Typography variant="h6">No hay productos disponibles</Typography>
       )}
+      <Footer></Footer>
     </div>
   );
 };

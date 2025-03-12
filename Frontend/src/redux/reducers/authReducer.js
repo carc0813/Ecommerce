@@ -34,6 +34,7 @@ import {
           loading: false,
         };
       case LOGIN_SUCCESS:
+        localStorage.setItem("Token", action.payload.token); // Guarda el token
         return {
           ...state,
           token: action.payload.token,
@@ -51,6 +52,7 @@ import {
           error: action.payload,
         };
       case LOGOUT:
+        localStorage.removeItem("Token");
         return {
           ...state,
           token: null,

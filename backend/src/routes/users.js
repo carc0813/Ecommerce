@@ -2,9 +2,18 @@ const express = require("express");
 const router = express.Router();
 
 
-const { registerUser } = require("../controllers/registerController");
+const { getAllUsers, registerUser, deleteUser} = require("../controllers/registerController");
 
 
-router.post("/register", registerUser); // Ruta para registrar usuario
+
+// Ruta para registrar usuario
+router.post("/register", registerUser); 
+
+// Obtener todos los usuarios
+router.get("/", getAllUsers);
+
+// Eliminar un usuario por ID
+router.delete("/:id", deleteUser);
+
 
 module.exports = router;
