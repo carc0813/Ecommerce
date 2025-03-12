@@ -1,20 +1,34 @@
 import { useState } from "react";
-import { Container, TextField, Button, Typography, Box, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { register } from "../../redux/actions";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 const Register = () => {
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth || {});
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     password2: "",
-    role: "user", // 🔹 Agrega el rol por defecto
+    role: "user",
   });
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const { name, email, password, password2, role } = formData;
 
@@ -22,30 +36,28 @@ const Register = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos enviados al backend:", formData); // 🔹 Agrega esto para verificar
     if (password !== password2) {
       alert("Las contraseñas no coinciden");
-    } else {
-      console.log({ name, email, password, role }); // Verificar qué se envía
-      dispatch(register({ name, email, password, role }));
+      return;
+    }
+    try {
+      await dispatch(register({ name, email, password, role }));
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      // Aquí puedes manejar el error, por ejemplo mostrando una notificación
     }
   };
-  
-  
-
-  if (auth && auth.isAuthenticated) {
-    return <Navigate to="/dashboard" />;
-  }
 
   return (
     <Container maxWidth="sm">
       <Box mt={5}>
-        <Typography>Registrarse</Typography>
-        {auth.error && <Typography color="error">{auth.error}</Typography>}
+        <Typography variant="h5">Registrarse</Typography>
         <form onSubmit={onSubmit}>
           <TextField
             label="Nombre"
@@ -90,7 +102,6 @@ const Register = () => {
             required
           />
 
-          {/* 🔹 Selector para el rol */}
           <FormControl fullWidth margin="normal">
             <InputLabel>Rol</InputLabel>
             <Select name="role" value={role} onChange={onChange}>
@@ -104,6 +115,16 @@ const Register = () => {
           </Button>
         </form>
       </Box>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert severity="success" onClose={() => setOpenSnackbar(false)}>
+          Registro exitoso. Redirigiendo al login...
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

@@ -28,8 +28,8 @@ const Dashboard = () => {
   return (
     <Container sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Box>
-        <Typography variant="h4">Dashboard</Typography>
-        <Typography>Bienvenido al panel de usuario.</Typography>
+        
+        <Typography><h4>Bienvenido</h4></Typography>
            <Box mt={3}>
               <Typography variant="h3" gutterBottom>
               Productos

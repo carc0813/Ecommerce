@@ -1,4 +1,4 @@
-const { mergeDefaults } = require("sequelize/lib/utils");
+
 const { User } = require("../db");
 const bcrypt = require("bcrypt");
 
@@ -8,7 +8,6 @@ const registerUser = async (req, res) => {
 
     console.log("Datos recibidos en el backend:", req.body); // 🔹 Verifica qué llega
 
-    // ❌ ERROR: Aquí se está incluyendo `password2` en la validación
     if (!name || !email || !password || !role) {
       return res
         .status(400)

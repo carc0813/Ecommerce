@@ -9,20 +9,20 @@ import {
   } from "../actions";
   
   const initialState = {
-    token: localStorage.getItem("Token"),
+    token: localStorage.getItem("Token"),//traemos el token al statte global
     isAuthenticated: !!localStorage.getItem("Token"), // Verifica si hay token
     user: null,
     error: null,
     loading: true,
   };
-  
+  //reducer solo para autenticaciion y registro 
   export const authReducer = (state = initialState, action) => {
     console.log("Acción recibida en authReducer:", action); // Debug
     switch (action.type) {
       case REGISTER_SUCCESS:
         return {
           ...state,
-          isAuthenticated: true,
+          isAuthenticated: false,
           user: action.payload,
           error: null,
         };

@@ -10,7 +10,7 @@ export const GET_PRODUCTS_FAIL = "GET_PRODUCTS_FAIL";
 export const  RESET_AUTH_STATE="RESET_AUTH_STATE";
 
 
-
+//action que sirve para registrarme en la base de datos
 export const register = (userData) => async (dispatch) => {
   try {
     const response = await axios.post(
@@ -44,7 +44,7 @@ export const register = (userData) => async (dispatch) => {
 
 
 
-
+//action para logueo despues de registrarme y ingresar ala pagina
 export const login = (email, password) => async (dispatch) => {
   try {
     const res = await axios.post("http://localhost:3001/users/login", { email, password });
@@ -63,7 +63,7 @@ export const login = (email, password) => async (dispatch) => {
         user: userData, // ✅ Guardamos el usuario
       },
     });
-
+    //enviamos el usuario ala localstorage para seguir trabajando con el en futuras sesiones 
     localStorage.setItem("token", token);
   } catch (error) {
     console.error("Error en login:", error.response?.data || error.message);
@@ -75,18 +75,18 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-
+//action para cerrar sesiion
 export const logout = () => (dispatch) => {
   localStorage.removeItem("Token");
   dispatch({
     type: LOGOUT,
   });
 };
-
+// Reinicia el estado al original
 export const resetAuthState = () => ({
   type: RESET_AUTH_STATE,
 });
-
+//traerme todos los productos de la base de datos 
 export const getProducts = () => async (dispatch) => {
   try {
     const res = await axios.get("http://localhost:3001/products");

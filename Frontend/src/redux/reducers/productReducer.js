@@ -6,7 +6,7 @@ const initialState = {
   loading: true,
   error: null,
 };
-
+//reducer para los productos 
 export const productReducer = (state = initialState, action) => {
   console.log("Acción recibida en productReducer:", action); // Debug
   switch (action.type) {
