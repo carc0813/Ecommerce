@@ -8,8 +8,10 @@ export const LOGOUT = "LOGOUT";
 export const GET_PRODUCTS_SUCCESS = "GET_PRODUCTS_SUCCESS";
 export const GET_PRODUCTS_FAIL = "GET_PRODUCTS_FAIL";
 export const  RESET_AUTH_STATE="RESET_AUTH_STATE";
-
-
+export const SET_PAGE = "SET_PAGE";
+export const ADD_TO_CART = "ADD_TO_CART";
+export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
+export const CHECKOUT = "CHECKOUT";
 //action que sirve para registrarme en la base de datos
 export const register = (userData) => async (dispatch) => {
   try {
@@ -102,3 +104,25 @@ export const getProducts = () => async (dispatch) => {
     });
   }
 };
+
+
+//paginacion 
+export const setPage = (page) => ({
+  type: SET_PAGE,
+  payload: page,
+});
+
+//agregar carrito
+export const addToCart = (product) => ({
+  type: ADD_TO_CART,
+  payload: product,
+});
+//eliminar carrito 
+export const removeFromCart = (productId) => ({
+  type: REMOVE_FROM_CART,
+  payload: productId,
+});
+//chequeo de base de datos 
+export const checkout = () => ({
+  type: CHECKOUT,
+});
