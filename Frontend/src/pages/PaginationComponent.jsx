@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../redux/actions";
 import CardProduct from "../components/Product/CardProduct";
-import PaginationComponent from "./PaginationComponent";
+
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ const Dashboard = () => {
           <CardProduct key={product.id} product={product} />
         ))}
       </div>
-      <PaginationComponent />
     </div>
   );
 };
