@@ -21,7 +21,7 @@ const Footer = () => {
             <Link href="/" color="inherit" underline="hover" sx={{ display: "block", mb: 1 }}>
               Inicio
             </Link>
-            <Link href="/productos" color="inherit" underline="hover" sx={{ display: "block", mb: 1 }}>
+            <Link href="/dashboard" color="inherit" underline="hover" sx={{ display: "block", mb: 1 }}>
               Productos
             </Link>
             <Link href="/contacto" color="inherit" underline="hover" sx={{ display: "block" }}>

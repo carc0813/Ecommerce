@@ -7,11 +7,16 @@ export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT = "LOGOUT";
 export const GET_PRODUCTS_SUCCESS = "GET_PRODUCTS_SUCCESS";
 export const GET_PRODUCTS_FAIL = "GET_PRODUCTS_FAIL";
+export const PRODUCT_REQUEST="PRODUCT_REQUEST";
+export const PRODUCT_SUCCESS="PRODUCT_SUCCESS";
+export const PRODUCT_FAIL="PRODUCT_FAIL";
 export const  RESET_AUTH_STATE="RESET_AUTH_STATE";
 export const SET_PAGE = "SET_PAGE";
 export const ADD_TO_CART = "ADD_TO_CART";
 export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 export const CHECKOUT = "CHECKOUT";
+
+
 //action que sirve para registrarme en la base de datos
 export const register = (userData) => async (dispatch) => {
   try {
@@ -84,10 +89,13 @@ export const logout = () => (dispatch) => {
     type: LOGOUT,
   });
 };
+
 // Reinicia el estado al original
 export const resetAuthState = () => ({
   type: RESET_AUTH_STATE,
 });
+
+
 //traerme todos los productos de la base de datos 
 export const getProducts = () => async (dispatch) => {
   try {
@@ -101,6 +109,25 @@ export const getProducts = () => async (dispatch) => {
     dispatch({
       type: GET_PRODUCTS_FAIL,
       payload: error.response ? error.response.data.message : error.message,
+    });
+  }
+};
+
+//traerme el producto de la base de datos 
+export const getProductById = (id) => async (dispatch) => {
+  dispatch({ type: PRODUCT_REQUEST });
+
+  try {
+    const response = await axios.get(`http://localhost:3001/products/${id}`);
+    const data = response.data; // ✅ Aquí está la respuesta correcta
+    console.log("Producto obtenido:", data);
+
+    dispatch({ type: PRODUCT_SUCCESS, payload: data });
+  } catch (error) {
+    console.error("Error al obtener producto:", error);
+    dispatch({
+      type: PRODUCT_FAIL,
+      payload: error.response?.data?.message || "Error al obtener el producto",
     });
   }
 };

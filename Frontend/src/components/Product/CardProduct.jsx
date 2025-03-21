@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardMedia, Typography, CardActions, Button } from "@mui/material";
-
+import { Link } from "react-router-dom";
 const CardProduct = ({ product }) => {
   return (
     <Card sx={{ maxWidth: 300, height: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
@@ -43,6 +43,9 @@ const CardProduct = ({ product }) => {
         <Button size="small" color="primary" variant="contained">
           Agregar al Carrito
         </Button>
+   <Button component={Link} to={`/product/${product.id}`} variant="contained">
+  Ver Detalle
+</Button>
       </CardActions>
     </Card>
   );

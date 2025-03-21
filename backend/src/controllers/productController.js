@@ -38,4 +38,26 @@ const createProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, createProduct };
+//traerme el producto de la base de datos 
+// Obtener un producto por ID usando findOne
+const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Buscar producto en la base de datos
+    const product = await Product.findOne({ where: { id } });
+
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    res.json(product); // Retorna el producto encontrado
+  } catch (error) {
+    console.error("Error en getProductById:", error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
+};
+
+
+
+module.exports = { getAllProducts, createProduct,getProductById};
