@@ -5,25 +5,31 @@ const { Product, Category } = require("../db");
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.findAll({
-      attributes: ["id", "title", "description", "price", "images"], 
+      attributes: ["id", "title", "description", "price", "images"],
       include: {
         model: Category,
-        attributes: ["name"],
+        as: "Categories",
+        attributes: ["name"], // ✅ Solo enviar el nombre de la categoría
+        through: { attributes: [] }, // ✅ Evitar datos innecesarios
       },
     });
-
-    // Transformar las imágenes a tipo json 
+    
+    
+    console.log(JSON.stringify(products, null, 2)); // 🔍 Revisa si Categories está vacío
+    // Transformar las imágenes y categorías
     const updatedProducts = products.map((product) => ({
       ...product.toJSON(),
-      images: product.images.map(img => `http://localhost:3001/images/${img}`)
+      images: product.images.map((img) => `http://localhost:3001/images/${img}`),
+      Categories: product.Categories.map((category) => category.name), // 👈 Array de nombres
     }));
 
     res.status(200).json(updatedProducts);
   } catch (error) {
-    console.error(error);
+    console.error("Error en getAllProducts:", error);
     res.status(500).send("Error al obtener los productos");
   }
 };
+
 
 
 //crear productos 

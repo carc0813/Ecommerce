@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductById } from "../../redux/actions";
-// import { logout } from "../../redux/actions";
 import { useParams, useNavigate } from "react-router-dom"; // 🔹 Agregado useNavigate
 import {
   Container,
@@ -19,7 +18,11 @@ const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate(); // 🔹 Definir navigate
-  const { product = {}, loading, error } = useSelector((state) => state.products);
+  const {
+    product = {},
+    loading,
+    error,
+  } = useSelector((state) => state.products);
   const baseUrl = "http://localhost:3001/images/";
 
   const imageUrl = product?.images?.[0]
@@ -30,10 +33,7 @@ const ProductDetail = () => {
     dispatch(getProductById(id));
   }, [dispatch, id]);
 
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   navigate("/login"); // 🔹 Ahora sí funciona correctamente
-  // };
+ 
 
   const handleGoBack = () => {
     navigate("/dashboard"); // 🔹 Ahora sí funciona correctamente
@@ -50,13 +50,24 @@ const ProductDetail = () => {
           Cerrar sesión
         </Button> */}
       </Stack>
-
       {loading ? (
         <Typography variant="h5">Cargando...</Typography>
       ) : error ? (
         <Typography color="error">{error}</Typography>
+      ) : !product || Object.keys(product).length === 0 ? ( // 🔹 Validación
+        <Typography variant="h6" color="textSecondary">
+          Producto no encontrado.
+        </Typography>
       ) : (
-        <Card sx={{ maxWidth: 900, mx: "auto", p: 3, borderRadius: 3, boxShadow: 3 }}>
+        <Card
+          sx={{
+            maxWidth: 900,
+            mx: "auto",
+            p: 3,
+            borderRadius: 3,
+            boxShadow: 3,
+          }}
+        >
           <Grid container spacing={4}>
             {/* Imagen del producto dentro del Grid */}
             <Grid item xs={12} md={6}>
@@ -80,13 +91,21 @@ const ProductDetail = () => {
                 </Typography>
 
                 {/* Precio */}
-                <Typography variant="h5" sx={{ fontWeight: "bold", color: "green", mt: 2 }}>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: "bold", color: "green", mt: 2 }}
+                >
                   ${product.price}
                 </Typography>
 
                 {/* Stock */}
-                <Typography variant="body2" sx={{ mt: 1, color: product.inStock > 0 ? "green" : "red" }}>
-                  {product.inStock > 0 ? `Stock disponible: ${product.inStock}` : "Sin stock"}
+                <Typography
+                  variant="body2"
+                  sx={{ mt: 1, color: product.inStock > 0 ? "green" : "red" }}
+                >
+                  {product.inStock > 0
+                    ? `Stock disponible: ${product.inStock}`
+                    : "Sin stock"}
                 </Typography>
 
                 {/* Tallas disponibles */}
@@ -99,7 +118,12 @@ const ProductDetail = () => {
                 {/* Etiquetas */}
                 <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                   {product.tags?.map((tag) => (
-                    <Chip key={tag} label={tag} color="primary" variant="outlined" />
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      color="primary"
+                      variant="outlined"
+                    />
                   ))}
                 </Stack>
 
@@ -122,4 +146,3 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
-

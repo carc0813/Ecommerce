@@ -15,8 +15,11 @@ export const SET_PAGE = "SET_PAGE";
 export const ADD_TO_CART = "ADD_TO_CART";
 export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 export const CHECKOUT = "CHECKOUT";
-
-
+export const SEARCH_PRODUCTS = "SEARCH_PRODUCTS";
+export const FILTER_PRODUCTS = "FILTER_PRODUCTS";
+export const SORT_PRODUCTS = "SORT_PRODUCTS";
+export const  GET_CATEGORIES_SUCCESS="GET_CATEGORIES_SUCCESS";
+export const   GET_CATEGORIES_ERROR="GET_CATEGORIES_ERROR";
 //action que sirve para registrarme en la base de datos
 export const register = (userData) => async (dispatch) => {
   try {
@@ -84,7 +87,7 @@ export const login = (email, password) => async (dispatch) => {
 
 //action para cerrar sesiion
 export const logout = () => (dispatch) => {
-  localStorage.removeItem("Token");
+  localStorage.removeItem("token");
   dispatch({
     type: LOGOUT,
   });
@@ -110,6 +113,17 @@ export const getProducts = () => async (dispatch) => {
       type: GET_PRODUCTS_FAIL,
       payload: error.response ? error.response.data.message : error.message,
     });
+  }
+};
+
+//traerme todas las categorias de la base de datos 
+export const getCategories = () => async (dispatch) => {
+  try {
+    const response = await fetch("http://localhost:3001/categories"); // Ajusta la URL según tu backend
+    const data = await response.json();
+    dispatch({ type: GET_CATEGORIES_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: GET_CATEGORIES_ERROR, payload: error.message });
   }
 };
 
@@ -152,4 +166,23 @@ export const removeFromCart = (productId) => ({
 //chequeo de base de datos 
 export const checkout = () => ({
   type: CHECKOUT,
+});
+
+
+// Búsqueda por nombre
+export const searchProducts = (query) => ({
+  type: SEARCH_PRODUCTS,
+  payload: query,
+});
+
+// Filtrado por categoría y precio
+export const filterProducts = (category, priceRange) => ({
+  type: FILTER_PRODUCTS,
+  payload: { category, priceRange },
+});
+
+// Ordenamiento por precio o nombre
+export const sortProducts = (orderBy, orderDirection) => ({
+  type: SORT_PRODUCTS,
+  payload: { orderBy, orderDirection },
 });

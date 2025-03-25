@@ -1,13 +1,18 @@
 const { Category, Product } = require('../db');
 
 const preloadData = async () => {
-  // Crear categorías
-  const categories = await Category.bulkCreate([
-    {  name: 'Shirts' },
-    {  name: 'Pants' },
-    {  name: 'Hoodies' },
-    { name: 'Hats' },
-  ]);
+   // Crear categorías
+   const categoriesData = ['Shirts', 'Pants', 'Hoodies', 'Hats'];
+   const createdCategories = await Category.bulkCreate(
+     categoriesData.map(name => ({ name })),
+     { returning: true }
+   );
+ 
+   // Crear un mapa de categorías para acceder por nombre
+   const categoryMap = createdCategories.reduce((acc, category) => {
+     acc[category.name.toLowerCase()] = category; // Guardamos la instancia completa
+     return acc;
+   }, {});
 
   // Crear productos
   const products = await Product.bulkCreate([
@@ -25,7 +30,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['sweatshirt'],
       gender: 'men',
-      category_id: categories[0].id,
+   
     },
     {
       title: "Men's Quilted Shirt Jacket",
@@ -41,7 +46,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['jacket'],
       gender: 'men',
-      category_id: categories[0].id,
+    
     },
     {
       title: "Men's Raven Lightweight Zip Up Bomber Jacket",
@@ -57,7 +62,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-      category_id: categories[0].id,
+      
     },
     {
       title: "Men's Turbine Long Sleeve Tee",
@@ -73,7 +78,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-      category_id: categories[0].id,
+    
     },
     {
       title: "Men's Turbine Short Sleeve Tee",
@@ -89,7 +94,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-      category_id: categories[0].id,
+   
     },
     {
       title: "Men's Cybertruck Owl Tee",
@@ -103,7 +108,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-      category_id: categories[0].id,
+     
     },
      {
       "title": "Men's Solar Roof Tee",
@@ -118,7 +123,8 @@ const preloadData = async () => {
       "slug": "men_solar_roof_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men's Let the Sun Shine Tee",
@@ -133,7 +139,8 @@ const preloadData = async () => {
       "slug": "men_let_the_sun_shine_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men's 3D Large Wordmark Tee",
@@ -148,7 +155,8 @@ const preloadData = async () => {
       "slug": "men_3d_large_wordmark_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+      
     },
     {
       "title": "Men's 3D T Logo Tee",
@@ -163,7 +171,8 @@ const preloadData = async () => {
       "slug": "men_3d_t_logo_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men’s 3D Small Wordmark Tee",
@@ -178,7 +187,8 @@ const preloadData = async () => {
       "slug": "men_3d_small_wordmark_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men's Plaid Mode Tee",
@@ -193,7 +203,8 @@ const preloadData = async () => {
       "slug": "men_plaid_mode_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men's Powerwall Tee",
@@ -208,7 +219,8 @@ const preloadData = async () => {
       "slug": "men_powerwall_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+   
     },
     {
       "title": "Men's Battery Day Tee",
@@ -223,7 +235,8 @@ const preloadData = async () => {
       "slug": "men_battery_day_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men’s Cybertruck Bulletproof Tee",
@@ -238,7 +251,8 @@ const preloadData = async () => {
       "slug": "men_cybertruck_bulletproof_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+    
     },
     {
       "title": "Men's Haha Yes Tee",
@@ -253,7 +267,8 @@ const preloadData = async () => {
       "slug": "men_haha_yes_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+    
     },
     {
       "title": "Men's S3XY Tee",
@@ -268,7 +283,8 @@ const preloadData = async () => {
       "slug": "men_s3xy_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "Men's 3D Wordmark Long Sleeve Tee",
@@ -283,7 +299,8 @@ const preloadData = async () => {
       "slug": "men_3d_wordmark_long_sleeve_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+      
     },
     {
       "title": "Men's 3D T Logo Long Sleeve Tee",
@@ -298,7 +315,8 @@ const preloadData = async () => {
       "slug": "men_3d_t_logo_long_sleeve_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+      
     },
     {
       "title": "Men's Raven Lightweight Hoodie",
@@ -313,7 +331,8 @@ const preloadData = async () => {
       "slug": "men_raven_lightweight_hoodie",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "men"
+      "gender": "men",
+      
     },
     {
       "title": "Chill Pullover Hoodie",
@@ -328,7 +347,8 @@ const preloadData = async () => {
       "slug": "chill_pullover_hoodie",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "unisex"
+      "gender": "unisex",
+     
     },
     {
       "title": "Men's Chill Full Zip Hoodie",
@@ -343,7 +363,8 @@ const preloadData = async () => {
       "slug": "men_chill_full_zip_hoodie",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+      
     },
     {
       "title": "Men's Chill Quarter Zip Pullover - Gray",
@@ -358,7 +379,9 @@ const preloadData = async () => {
       "slug": "men_chill_quarter_zip_pullover_-_gray",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+   
+      
     },
     {
       "title": "Men's Chill Quarter Zip Pullover - White",
@@ -373,7 +396,8 @@ const preloadData = async () => {
       "slug": "men_chill_quarter_zip_pullover_-_white",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "men"
+      "gender": "men",
+     
     },
     {
       "title": "3D Large Wordmark Pullover Hoodie",
@@ -388,7 +412,8 @@ const preloadData = async () => {
       "slug": "3d_large_wordmark_pullover_hoodie",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "unisex"
+      "gender": "unisex",
+     
     },
     {
       "title": "Cybertruck Graffiti Hoodie",
@@ -403,7 +428,8 @@ const preloadData = async () => {
       "slug": "cybertruck_graffiti_hoodie",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "unisex"
+      "gender": "unisex",
+    
     },
     {
       "title": "Relaxed T Logo Hat",
@@ -418,7 +444,8 @@ const preloadData = async () => {
       "slug": "relaxed_t_logo_hat",
       "type": "hats",
       "tags": ["hats"],
-      "gender": "unisex"
+      "gender": "unisex",
+   
     },
     {
       "title": "Thermal Cuffed Beanie",
@@ -433,7 +460,8 @@ const preloadData = async () => {
       "slug": "thermal_cuffed_beanie",
       "type": "hats",
       "tags": ["hats"],
-      "gender": "unisex"
+      "gender": "unisex",
+  
     },
     {
       "title": "Women's Cropped Puffer Jacket",
@@ -448,7 +476,8 @@ const preloadData = async () => {
       "slug": "women_cropped_puffer_jacket",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "women"
+      "gender": "women",
+    
     },
     {
       "title": "Women's Chill Half Zip Cropped Hoodie",
@@ -463,7 +492,8 @@ const preloadData = async () => {
       "slug": "women_chill_half_zip_cropped_hoodie",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "women"
+      "gender": "women",
+    
     },
     {
       "title": "Women's Raven Slouchy Crew Sweatshirt",
@@ -478,7 +508,8 @@ const preloadData = async () => {
       "slug": "women_raven_slouchy_crew_sweatshirt",
       "type": "hoodies",
       "tags": ["hoodie"],
-      "gender": "women"
+      "gender": "women",
+    
     },
     {
       "title": "Women's Turbine Cropped Long Sleeve Tee",
@@ -493,7 +524,8 @@ const preloadData = async () => {
       "slug": "women_turbine_cropped_long_sleeve_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+    
     },
     {
       "title": "Women's Turbine Cropped Short Sleeve Tee",
@@ -508,7 +540,8 @@ const preloadData = async () => {
       "slug": "women_turbine_cropped_short_sleeve_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+  
     },
     {
       "title": "Women's T Logo Short Sleeve Scoop Neck Tee",
@@ -523,7 +556,8 @@ const preloadData = async () => {
       "slug": "women_t_logo_short_sleeve_scoop_neck_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+     
     },
     {
       "title": "Women's T Logo Long Sleeve Scoop Neck Tee",
@@ -538,7 +572,8 @@ const preloadData = async () => {
       "slug": "women_t_logo_long_sleeve_scoop_neck_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+    
     },
     {
       "title": "Women's Small Wordmark Short Sleeve V-Neck Tee",
@@ -553,7 +588,8 @@ const preloadData = async () => {
       "slug": "women_small_wordmark_short_sleeve_v-neck_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+    
     },
     {
       "title": "Women's Large Wordmark Short Sleeve Crew Neck Tee",
@@ -568,7 +604,8 @@ const preloadData = async () => {
       "slug": "women_large_wordmark_short_sleeve_crew_neck_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+     
     },
     {
       "title": "Women's Plaid Mode Tee",
@@ -583,7 +620,8 @@ const preloadData = async () => {
       "slug": "women_plaid_mode_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+     
     },{
       "title": "Women’s Powerwall Tee",
       "description": "Inspired by our popular home battery, the Tesla Powerwall Tee is made from 100% cotton and features the phrase 'Pure Energy' under our signature logo in the back. Designed for fit, comfort and style, the exclusive tee promotes sustainable energy in any",
@@ -597,7 +635,8 @@ const preloadData = async () => {
       "slug": "women_powerwall_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+  
     },
     {
       "title": "Women's Corp Jacket",
@@ -612,7 +651,8 @@ const preloadData = async () => {
       "slug": "women_corp_jacket",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+     
     },
     {
       "title": "Women's Raven Joggers",
@@ -627,7 +667,8 @@ const preloadData = async () => {
       "slug": "women_raven_joggers",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "women"
+      "gender": "women",
+   
     },
     {
       "title": "Kids Cybertruck Long Sleeve Tee",
@@ -642,7 +683,8 @@ const preloadData = async () => {
       "slug": "kids_cybertruck_long_sleeve_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+    
     },
     {
       "title": "Kids Scribble T Logo Tee",
@@ -657,7 +699,8 @@ const preloadData = async () => {
       "slug": "kids_scribble_t_logo_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+    
     },
     {
       "title": "Kids Cybertruck Tee",
@@ -672,7 +715,8 @@ const preloadData = async () => {
       "slug": "kids_cybertruck_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+     
     },
     {
       "title": "Kids Racing Stripe Tee",
@@ -687,7 +731,8 @@ const preloadData = async () => {
       "slug": "kids_racing_stripe_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+    
     },
     {
       "title": "Kids 3D T Logo Tee",
@@ -702,7 +747,8 @@ const preloadData = async () => {
       "slug": "kids_3d_t_logo_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+    
     },
     {
       "title": "Kids Checkered Tee",
@@ -717,7 +763,8 @@ const preloadData = async () => {
       "slug": "kids_checkered_tee",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+     
     },
     {
       "title": "Made on Earth by Humans Onesie",
@@ -732,7 +779,8 @@ const preloadData = async () => {
       "slug": "made_on_earth_by_humans_onesie",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+    
     },
     {
       "title": "Scribble T Logo Onesie",
@@ -747,7 +795,8 @@ const preloadData = async () => {
       "slug": "scribble_t_logo_onesie",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+     
     },
     {
       "title": "Zero Emissions (Almost) Onesie",
@@ -762,7 +811,8 @@ const preloadData = async () => {
       "slug": "zero_emissions_(almost)_onesie",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+     
     },
     {
       "title": "Kids Cyberquad Bomber Jacket",
@@ -777,7 +827,8 @@ const preloadData = async () => {
       "slug": "kids_cyberquad_bomber_jacket",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+     
     },
     {
       "title": "Kids Corp Jacket",
@@ -792,11 +843,21 @@ const preloadData = async () => {
       "slug": "kids_corp_jacket",
       "type": "shirts",
       "tags": ["shirt"],
-      "gender": "kid"
+      "gender": "kid",
+      
     }
     
     // Agrega más productos aquí...
   ]);
+
+   // Asociar productos con categorías
+   await Promise.all(products.map(async (product) => {
+    if (categoryMap[product.type]) {
+      await product.addCategory(categoryMap[product.type]); // 🔥 Relación correcta
+    }
+  }));
+
+  console.log("Datos precargados correctamente");
 };
 
 

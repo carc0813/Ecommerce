@@ -34,8 +34,20 @@ const { Category,Product,User } = sequelize.models;
 
 // Aca vendrian las relaciones
 
-Category.belongsToMany(Product, { through: 'category_product' }); // Many-to-many
-Product.belongsToMany(Category, { through: 'category_product' }); // Many-to-many
+// En el modelo Product:
+Product.belongsToMany(Category, {
+  through: "ProductCategories",
+  as: "Categories",
+  foreignKey: "productId",
+});
+
+// En el modelo Category:
+Category.belongsToMany(Product, {
+  through: "ProductCategories",
+  as: "Products",
+  foreignKey: "categoryId",
+});
+
 // Relación One-to-Many entre Usuario y Productos
 User.hasMany(Product, { foreignKey: "userId", as: "products" });
 Product.belongsTo(User, { foreignKey: "userId", as: "owner" });
