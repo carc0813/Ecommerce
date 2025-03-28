@@ -1,15 +1,31 @@
 import React from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Badge, IconButton } from "@mui/material";
+import { Badge, IconButton, Tooltip } from "@mui/material";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const CartIcon = ({ cartCount }) => {
+const CartIcon = () => {
+  const cartCount = useSelector((state) =>
+    state.cart.cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  );
+  const navigate = useNavigate();
+
   return (
-    <IconButton color="inherit">
-      <Badge badgeContent={cartCount} color="error">
-        <ShoppingCartIcon />
-      </Badge>
-    </IconButton>
+    <Tooltip title="Ver carrito">
+      <IconButton color="inherit" onClick={() => navigate("/cart")}>
+        {cartCount > 0 ? (
+          <Badge badgeContent={cartCount} color="error">
+            <ShoppingCartIcon />
+          </Badge>
+        ) : (
+          <ShoppingCartIcon />
+        )}
+      </IconButton>
+    </Tooltip>
   );
 };
 
 export default CartIcon;
+
+
+

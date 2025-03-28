@@ -79,10 +79,10 @@ export const productReducer = (state = initialState, action) => {
       return {
         ...state,
         products: state.allProducts.filter((p) => {
-          const categories = p.categories || []; // ✅ Asegurar array
+          const categories = p.categories || []; // ✅ Asegurar array vacío si falta
           const matchesCategory =
             action.payload.category === "All" || 
-            categories.some((cat) => cat === action.payload.category); // ✅ Evitar error
+            categories.includes(action.payload.category); // ✅ Ahora funciona bien
     
           const matchesPrice =
             p.price >= action.payload.priceRange.min &&
@@ -92,8 +92,6 @@ export const productReducer = (state = initialState, action) => {
         }),
       };
     
-    
-
     // 🔼🔽 Ordenamiento por precio o nombre
     case SORT_PRODUCTS:
       return {

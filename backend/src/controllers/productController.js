@@ -9,18 +9,15 @@ const getAllProducts = async (req, res) => {
       include: {
         model: Category,
         as: "Categories",
-        attributes: ["name"], // ✅ Solo enviar el nombre de la categoría
-        through: { attributes: [] }, // ✅ Evitar datos innecesarios
+        attributes: ["name"], 
+        through: { attributes: [] }, 
       },
     });
-    
-    
-    console.log(JSON.stringify(products, null, 2)); // 🔍 Revisa si Categories está vacío
-    // Transformar las imágenes y categorías
-    const updatedProducts = products.map((product) => ({
+
+    const updatedProducts = products.map(product => ({
       ...product.toJSON(),
-      images: product.images.map((img) => `http://localhost:3001/images/${img}`),
-      Categories: product.Categories.map((category) => category.name), // 👈 Array de nombres
+      images: product.images.map(img => `http://localhost:3001/images/${img}`),
+      Categories: product.Categories.length > 0 ? product.Categories.map(cat => cat.name) : ["Uncategorized"], 
     }));
 
     res.status(200).json(updatedProducts);

@@ -1,9 +1,33 @@
 import React from "react";
-import { Card, CardContent, CardMedia, Typography, CardActions, Button } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  CardActions,
+  Button,
+} from "@mui/material";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/actions";
+
 const CardProduct = ({ product }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
+  };
+
   return (
-    <Card sx={{ maxWidth: 300, height: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+    <Card
+      sx={{
+        maxWidth: 300,
+        height: 400,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
       {/* Imagen del Producto */}
       <CardMedia
         component="img"
@@ -13,9 +37,19 @@ const CardProduct = ({ product }) => {
         sx={{ objectFit: "cover" }}
       />
 
-      <CardContent sx={{ flexGrow: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <CardContent
+        sx={{
+          flexGrow: 1,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {/* Título */}
-        <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: "center" }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: "bold", textAlign: "center" }}
+        >
           {product.title || "Sin título"}
         </Typography>
 
@@ -33,24 +67,34 @@ const CardProduct = ({ product }) => {
         </Typography>
 
         {/* Precio */}
-        <Typography variant="h6" sx={{ textAlign: "center", marginTop: "auto" }}>
+        <Typography
+          variant="h6"
+          sx={{ textAlign: "center", marginTop: "auto" }}
+        >
           ${product.price?.toFixed(2) || "0.00"}
         </Typography>
       </CardContent>
 
       {/* Botón */}
       <CardActions sx={{ justifyContent: "center" }}>
-        <Button size="small" color="primary" variant="contained">
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          onClick={handleAddToCart}
+        >
           Agregar al Carrito
         </Button>
-   <Button component={Link} to={`/product/${product.id}`} variant="contained">
-  Ver Detalle
-</Button>
+        <Button
+          component={Link}
+          to={`/product/${product.id}`}
+          variant="contained"
+        >
+          Ver Detalle
+        </Button>
       </CardActions>
     </Card>
   );
 };
 
 export default CardProduct;
-
-

@@ -2,7 +2,7 @@ import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions";
-
+import CartIcon from "../../pages/CartIcon";
 const Navbar = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth || {}); // Evita error si auth es undefined
@@ -17,6 +17,7 @@ const Navbar = () => {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           E-commerce
         </Typography>
+        <CartIcon />
         <Button color="inherit" component={NavLink} to="/">
           Inicio
         </Button>

@@ -46,6 +46,10 @@ module.exports = (sequelize) => {
       type: DataTypes.ARRAY(DataTypes.STRING), // Almacenar como array de strings
       allowNull: false 
   },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false, // o true, según tu lógica
+  }
   }, { timestamps: false });
 
 };
