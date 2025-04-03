@@ -22,6 +22,8 @@ export const FILTER_PRODUCTS = "FILTER_PRODUCTS";
 export const SORT_PRODUCTS = "SORT_PRODUCTS";
 export const GET_CATEGORIES_SUCCESS = "GET_CATEGORIES_SUCCESS";
 export const GET_CATEGORIES_ERROR = "GET_CATEGORIES_ERROR";
+export const UPDATE_CART_QUANTITY="UPDATE_CART_QUANTITY";
+
 
 //action que sirve para registrarme en la base de datos
 export const register = (userData) => async (dispatch) => {
@@ -238,4 +240,9 @@ export const processPurchase = () => async (dispatch, getState) => {
       autoClose: 3000,
     });
   }
+};
+
+// Acción para actualizar la cantidad de productos en el carrito
+export const updateCartQuantity = (itemId, quantity) => (dispatch) => {
+  dispatch({ type: UPDATE_CART_QUANTITY, payload: { itemId, quantity } });
 };

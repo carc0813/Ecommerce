@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductById } from "../../redux/actions";
-import { useParams, useNavigate } from "react-router-dom"; // 🔹 Agregado useNavigate
+import { getProductById, addToCart } from "../../redux/actions";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -9,15 +9,19 @@ import {
   CardMedia,
   CardContent,
   Grid,
-  Chip,
   Stack,
   Button,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // 🔹 Definir navigate
+  const navigate = useNavigate();
   const {
     product = {},
     loading,
@@ -29,32 +33,42 @@ const ProductDetail = () => {
     ? `${baseUrl}${product.images[0]}`
     : "https://via.placeholder.com/600";
 
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("Blanco");
+
   useEffect(() => {
     dispatch(getProductById(id));
   }, [dispatch, id]);
 
- 
-
   const handleGoBack = () => {
-    navigate("/dashboard"); // 🔹 Ahora sí funciona correctamente
+    navigate("/dashboard");
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) return;
+    dispatch(addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      quantity: 1,
+      size: selectedSize,
+      color: selectedColor,
+      image: imageUrl,
+    }));
   };
 
   return (
     <Container sx={{ minHeight: "100vh", py: 5 }}>
-      {/* Botones de navegación */}
       <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
         <Button variant="contained" color="secondary" onClick={handleGoBack}>
           Volver a la tienda
         </Button>
-        {/* <Button variant="contained" color="error" onClick={handleLogout}>
-          Cerrar sesión
-        </Button> */}
       </Stack>
       {loading ? (
         <Typography variant="h5">Cargando...</Typography>
       ) : error ? (
         <Typography color="error">{error}</Typography>
-      ) : !product || Object.keys(product).length === 0 ? ( // 🔹 Validación
+      ) : !product || Object.keys(product).length === 0 ? (
         <Typography variant="h6" color="textSecondary">
           Producto no encontrado.
         </Typography>
@@ -69,7 +83,6 @@ const ProductDetail = () => {
           }}
         >
           <Grid container spacing={4}>
-            {/* Imagen del producto dentro del Grid */}
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
@@ -80,7 +93,6 @@ const ProductDetail = () => {
               />
             </Grid>
 
-            {/* Detalles del producto */}
             <Grid item xs={12} md={6}>
               <CardContent>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
@@ -90,7 +102,6 @@ const ProductDetail = () => {
                   {product.description}
                 </Typography>
 
-                {/* Precio */}
                 <Typography
                   variant="h5"
                   sx={{ fontWeight: "bold", color: "green", mt: 2 }}
@@ -98,7 +109,6 @@ const ProductDetail = () => {
                   ${product.price}
                 </Typography>
 
-                {/* Stock */}
                 <Typography
                   variant="body2"
                   sx={{ mt: 1, color: product.inStock > 0 ? "green" : "red" }}
@@ -108,31 +118,38 @@ const ProductDetail = () => {
                     : "Sin stock"}
                 </Typography>
 
-                {/* Tallas disponibles */}
-                <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-                  {product.sizes?.map((size) => (
-                    <Chip key={size} label={size} variant="outlined" />
-                  ))}
-                </Stack>
+                <FormControl component="fieldset" sx={{ mt: 2 }}>
+                  <FormLabel component="legend">Talla</FormLabel>
+                  <RadioGroup
+                    row
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                  >
+                    {product.sizes?.map((size) => (
+                      <FormControlLabel key={size} value={size} control={<Radio />} label={size} />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
 
-                {/* Etiquetas */}
-                <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-                  {product.tags?.map((tag) => (
-                    <Chip
-                      key={tag}
-                      label={tag}
-                      color="primary"
-                      variant="outlined"
-                    />
-                  ))}
-                </Stack>
+                <FormControl component="fieldset" sx={{ mt: 2 }}>
+                  <FormLabel component="legend">Color</FormLabel>
+                  <RadioGroup
+                    row
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                  >
+                    {product.colors?.map((color) => (
+                      <FormControlLabel key={color} value={color} control={<Radio />} label={color} />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
 
-                {/* Botón de compra */}
                 <Button
                   variant="contained"
                   color="primary"
                   sx={{ mt: 3 }}
-                  disabled={product.inStock === 0}
+                  disabled={!selectedSize || !selectedColor || product.inStock === 0}
+                  onClick={handleAddToCart}
                 >
                   Agregar al carrito
                 </Button>

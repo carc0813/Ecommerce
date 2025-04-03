@@ -1,4 +1,4 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, CLEAR_CART } from "../actions";
+import { ADD_TO_CART, REMOVE_FROM_CART, CLEAR_CART,UPDATE_CART_QUANTITY } from "../actions";
 
 const initialState = {
   cartItems: [],
@@ -39,6 +39,15 @@ export const cartReducer = (state = initialState, action) => {
         cartItems: [],
         totalAmount: 0,
       };
+      case UPDATE_CART_QUANTITY:
+        const updatedCartItems = state.cartItems.map((item) =>
+          item.id === action.payload.itemId ? { ...item, quantity: action.payload.quantity } : item
+        );
+        return {
+          ...state,
+          cartItems: updatedCartItems,
+          totalAmount: updatedCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        };
 
     default:
       return state;
