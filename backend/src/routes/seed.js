@@ -1,5 +1,6 @@
 const { Category, Product } = require('../db');
 
+const AVAILABLE_COLORS = ['Black', 'White', 'Red', 'Blue', 'Gray'];
 const preloadData = async () => {
    
    // **Verificar si las categorías ya existen**
@@ -36,7 +37,8 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['sweatshirt'],
       gender: 'men',
-   
+      color: 'Black',
+      
     },
     {
       title: "Men's Quilted Shirt Jacket",
@@ -52,7 +54,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['jacket'],
       gender: 'men',
-    
+      color: 'Gray'
     },
     {
       title: "Men's Raven Lightweight Zip Up Bomber Jacket",
@@ -68,7 +70,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
- 
+      color: 'Black'
     },
     {
       title: "Men's Turbine Long Sleeve Tee",
@@ -84,7 +86,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-      
+      color: 'Black'
     },
     {
       title: "Men's Turbine Short Sleeve Tee",
@@ -100,7 +102,7 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-   
+      color: 'Black'
     },
     {
       title: "Men's Cybertruck Owl Tee",
@@ -114,23 +116,23 @@ const preloadData = async () => {
       type: 'shirts',
       tags: ['shirt'],
       gender: 'men',
-     
+      color: 'Black'
     },
      {
-      "title": "Men's Solar Roof Tee",
-      "description": "Inspired by our fully integrated home solar and storage system, the Tesla Solar Roof Tee advocates for clean, sustainable energy wherever you go. Designed for fit, comfort and style, the tee features an aerial view of our seamless Solar Roof design on the front with our signature T logo above 'Solar Roof' on the back. Made from 100% Peruvian cotton.",
-      "images": [
+      title: "Men's Solar Roof Tee",
+      description: "Inspired by our fully integrated home solar and storage system, the Tesla Solar Roof Tee advocates for clean, sustainable energy wherever you go. Designed for fit, comfort and style, the tee features an aerial view of our seamless Solar Roof design on the front with our signature T logo above 'Solar Roof' on the back. Made from 100% Peruvian cotton.",
+      images: [
         "1703767-00-A_0_2000.jpg",
         "1703767-00-A_1.jpg"
       ],
-      "inStock": 15,
-      "price": 35,
-      "sizes": ["S", "M", "L", "XL"],
-      "slug": "men_solar_roof_tee",
-      "type": "shirts",
-      "tags": ["shirt"],
-      "gender": "men",
-      
+      inStock: 15,
+      price: 35,
+      sizes: ["S", "M", "L", "XL"],
+      slug: "men_solar_roof_tee",
+      type: "shirts",
+      tags: ["shirt"],
+      gender: "men",
+      color : 'Black'
     },
     {
       "title": "Men's Let the Sun Shine Tee",
@@ -146,7 +148,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-      
+      "color": 'Black'
     },
     {
       "title": "Men's 3D Large Wordmark Tee",
@@ -162,7 +164,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-     
+     "color": 'Black'
     },
     {
       "title": "Men's 3D T Logo Tee",
@@ -178,6 +180,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
+      "color": 'Black'
      
     },
     {
@@ -194,6 +197,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
+      "color": 'Black'
      
       
     },
@@ -211,6 +215,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
+      "color": 'Black'
    
       
     },
@@ -228,6 +233,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
+      "color": 'Black'
      
       
     },
@@ -245,8 +251,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-      
-      
+      "color": 'Black'
     },
     {
       "title": "Men’s Cybertruck Bulletproof Tee",
@@ -262,7 +267,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-     
+     "color": 'Black'
     },
     {
       "title": "Men's Haha Yes Tee",
@@ -278,7 +283,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-    
+      "color": 'Black'
     },
     {
       "title": "Men's S3XY Tee",
@@ -294,7 +299,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-      
+      "color": 'Black'
     },
     {
       "title": "Men's 3D Wordmark Long Sleeve Tee",
@@ -310,6 +315,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
+       "color": 'Black'
     
     },
     {
@@ -326,7 +332,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-     
+       "color": 'Black'
     },
     {
       "title": "Men's Raven Lightweight Hoodie",
@@ -342,7 +348,7 @@ const preloadData = async () => {
       "type": "hoodies",
       "tags": ["hoodie"],
       "gender": "men",
-     
+       "color": 'Black'
     },
     {
       "title": "Chill Pullover Hoodie",
@@ -358,7 +364,7 @@ const preloadData = async () => {
       "type": "hoodies",
       "tags": ["hoodie"],
       "gender": "unisex",
-     
+       "color": 'Black'
     },
     {
       "title": "Men's Chill Full Zip Hoodie",
@@ -374,7 +380,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-     
+       "color": 'Black'
     },
     {
       "title": "Men's Chill Quarter Zip Pullover - Gray",
@@ -390,7 +396,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-     
+       "color": 'Black'
       
     },
     {
@@ -407,7 +413,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "men",
-   
+      "color": 'Black'
     },
     {
       "title": "3D Large Wordmark Pullover Hoodie",
@@ -425,7 +431,7 @@ const preloadData = async () => {
       "gender": "unisex",
       "type": "hoodies",
       "type": "hoodies",
-      
+        "color": 'Black'
     },
     {
       "title": "Cybertruck Graffiti Hoodie",
@@ -441,7 +447,7 @@ const preloadData = async () => {
       "type": "hoodies",
       "tags": ["hoodie"],
       "gender": "unisex",
-    
+      "color": 'Black'
     },
     {
       "title": "Relaxed T Logo Hat",
@@ -457,7 +463,7 @@ const preloadData = async () => {
       "type": "hats",
       "tags": ["hats"],
       "gender": "unisex",
-     
+     "color": 'Black'
     },
     {
       "title": "Thermal Cuffed Beanie",
@@ -473,7 +479,7 @@ const preloadData = async () => {
       "type": "hats",
       "tags": ["hats"],
       "gender": "unisex",
-     
+       "color": 'Black'
     },
     {
       "title": "Women's Cropped Puffer Jacket",
@@ -489,7 +495,7 @@ const preloadData = async () => {
       "type": "hoodies",
       "tags": ["hoodie"],
       "gender": "women",
-    
+      "color": 'Black'
     },
     {
       "title": "Women's Chill Half Zip Cropped Hoodie",
@@ -505,6 +511,7 @@ const preloadData = async () => {
       "type": "hoodies",
       "tags": ["hoodie"],
       "gender": "women",
+      "color": 'Black'
      
     },
     {
@@ -521,6 +528,7 @@ const preloadData = async () => {
       "type": "hoodies",
       "tags": ["hoodie"],
       "gender": "women",
+      "color": 'Black'
     
     },
     {
@@ -537,6 +545,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black'
      
     },
     {
@@ -553,6 +562,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black'
      
     },
     {
@@ -569,7 +579,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
-  
+       "color": 'Black'
     },
     {
       "title": "Women's T Logo Long Sleeve Scoop Neck Tee",
@@ -585,6 +595,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -601,6 +612,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -617,6 +629,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -633,6 +646,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },{
       "title": "Women’s Powerwall Tee",
@@ -648,6 +662,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -664,6 +679,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -680,6 +696,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "women",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -696,6 +713,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -712,6 +730,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -728,6 +747,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -744,6 +764,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -760,6 +781,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -776,6 +798,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -792,6 +815,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -808,6 +832,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -824,6 +849,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -840,6 +866,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     },
     {
@@ -856,6 +883,7 @@ const preloadData = async () => {
       "type": "shirts",
       "tags": ["shirt"],
       "gender": "kid",
+      "color": 'Black',
       category_id: categoryMap["shirts"],
     }
     

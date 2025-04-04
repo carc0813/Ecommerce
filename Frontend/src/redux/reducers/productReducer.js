@@ -13,116 +13,112 @@ import {
 } from "../actions";
 
 const initialState = {
-  allProducts: [], // ✅ Lista completa (no modificada)
+  allProducts: [], // ✅ Productos originales
   products: [], // ✅ Lista filtrada y ordenada
   product: {},
   loading: true,
   error: null,
   cart: [],
+  searchQuery: "", // 🔎 Estado de búsqueda
+  filters: { category: "All", priceRange: { min: 0, max: Infinity } }, // 🎯 Filtros
+  sort: { orderBy: "name", orderDirection: "asc" }, // 🔼🔽 Ordenamiento
 };
 
-// Reducer para los productos
 export const productReducer = (state = initialState, action) => {
   console.log("Acción recibida en productReducer:", action); // Debug
 
   switch (action.type) {
     case GET_PRODUCTS_SUCCESS:
-  return {
-    ...state,
-    allProducts: action.payload.map(product => ({
-      ...product,
-      categories: product.Categories ? product.Categories : [], // ✅ Evitar undefined
-    })),
-    products: action.payload.map(product => ({
-      ...product,
-      categories: product.Categories ? product.Categories : [], // ✅ Evitar undefined
-    })),
-    loading: false,
-  };
+      return {
+        ...state,
+        allProducts: action.payload.map(product => ({
+          ...product,
+          categories: product.Categories || [], // ✅ Evitar undefined
+        })),
+        products: action.payload.map(product => ({
+          ...product,
+          categories: product.Categories || [],
+        })),
+        loading: false,
+      };
 
     case GET_PRODUCTS_FAIL:
-      return {
-        ...state,
-        error: action.payload,
-        loading: false,
-      };
+      return { ...state, error: action.payload, loading: false };
+
     case PRODUCT_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
+      return { ...state, loading: true };
+
     case PRODUCT_SUCCESS:
-      return {
-        ...state, // ✅ Mantiene los datos previos
-        product: action.payload, // ✅ Guarda el producto individual
-        loading: false,
-      };
+      return { ...state, product: action.payload, loading: false };
+
     case PRODUCT_FAIL:
+      return { ...state, loading: false, error: action.payload };
+
+    // 🔎 Búsqueda + Filtrado
+    case SEARCH_PRODUCTS: {
+      const query = action.payload?.toLowerCase().trim() || "";
+      const filtered = state.allProducts.filter((p) =>
+        p.title?.toLowerCase().includes(query)
+      );
+
       return {
         ...state,
-        loading: false,
-        error: action.payload,
+        searchQuery: query,
+        products: filtered.length ? filtered : state.allProducts, // 🔄 Mantiene productos originales si no hay coincidencias
       };
-     // 🔎 Búsqueda por nombre
-    case SEARCH_PRODUCTS:
-      return {
-        ...state,
-        products: state.allProducts.filter((p) =>
-          p.title.toLowerCase().includes(action.payload.toLowerCase())
-        ),
-      };
+    }
 
     // 🎯 Filtrado por categoría y precio
-    case FILTER_PRODUCTS:
-      console.log("Ejemplo de producto antes del filtrado:", state.allProducts[0]);
-    
+    case FILTER_PRODUCTS: {
+      const { category, priceRange } = action.payload;
+
+      const filtered = state.allProducts.filter((p) => {
+        const categories = p.categories || [];
+        const matchesCategory = category === "All" || categories.includes(category);
+        const matchesPrice = p.price >= priceRange.min && p.price <= priceRange.max;
+
+        return matchesCategory && matchesPrice;
+      });
+
       return {
         ...state,
-        products: state.allProducts.filter((p) => {
-          const categories = p.categories || []; // ✅ Asegurar array vacío si falta
-          const matchesCategory =
-            action.payload.category === "All" || 
-            categories.includes(action.payload.category); // ✅ Ahora funciona bien
-    
-          const matchesPrice =
-            p.price >= action.payload.priceRange.min &&
-            p.price <= action.payload.priceRange.max;
-    
-          return matchesCategory && matchesPrice;
-        }),
+        filters: action.payload, // 🔄 Guarda filtros activos
+        products: filtered,
       };
-    
-    // 🔼🔽 Ordenamiento por precio o nombre
-    case SORT_PRODUCTS:
+    }
+
+    // 🔼🔽 Ordenamiento
+    case SORT_PRODUCTS: {
+      const { orderBy, orderDirection } = action.payload;
+
+      const sortedProducts = [...state.products].sort((a, b) => {
+        if (orderBy === "price") {
+          return orderDirection === "asc" ? a.price - b.price : b.price - a.price;
+        } else {
+          return orderDirection === "asc"
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
+        }
+      });
+
       return {
         ...state,
-        products: [...state.products].sort((a, b) => {
-          if (action.payload.orderBy === "price") {
-            return action.payload.orderDirection === "asc" ? a.price - b.price : b.price - a.price;
-          } else {
-            return action.payload.orderDirection === "asc"
-              ? a.title.localeCompare(b.title)
-              : b.title.localeCompare(a.title);
-          }
-        }),
+        sort: action.payload, // 🔄 Guarda estado del ordenamiento
+        products: sortedProducts,
       };
-      case ADD_TO_CART:
-      return {
-        ...state,
-        cart: [...state.cart, action.payload],
-      };
+    }
+
+    // 🛒 Manejo del carrito
+    case ADD_TO_CART:
+      return { ...state, cart: [...state.cart, action.payload] };
+
     case REMOVE_FROM_CART:
-      return {
-        ...state,
-        cart: state.cart.filter((item) => item.id !== action.payload),
-      };
+      return { ...state, cart: state.cart.filter((item) => item.id !== action.payload) };
+
     case CHECKOUT:
-      return {
-        ...state,
-        cart: [],
-      };
+      return { ...state, cart: [] };
+
     default:
       return state;
   }
 };
-

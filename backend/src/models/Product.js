@@ -44,12 +44,16 @@ module.exports = (sequelize) => {
     },
     images: { 
       type: DataTypes.ARRAY(DataTypes.STRING), // Almacenar como array de strings
-      allowNull: false 
+      allowNull: true,  // Permitir valores NULL
   },
   type: {
     type: DataTypes.STRING,
     allowNull: false, // o true, según tu lógica
-  }
+  },
+  color: {
+    type: DataTypes.STRING,
+    allowNull: true, // o true, según tu lógica
+  },
   }, { timestamps: false });
 
 };

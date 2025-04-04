@@ -195,6 +195,7 @@ export const addToCart = (product) => (dispatch, getState) => {
 
   localStorage.setItem("cart", JSON.stringify(getState().cart.cartItems));
 };
+
 //eliminar carrito
 export const removeFromCart = (productId) => (dispatch, getState) => {
   dispatch({
@@ -209,6 +210,7 @@ export const removeFromCart = (productId) => (dispatch, getState) => {
 
   localStorage.setItem("cart", JSON.stringify(getState().cart.cartItems));
 };
+
 //actualizar el carrito de compras 
 export const clearCart = () => (dispatch) => {
   dispatch({ type: CLEAR_CART});
