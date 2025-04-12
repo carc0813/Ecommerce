@@ -245,6 +245,11 @@ export const processPurchase = () => async (dispatch, getState) => {
 };
 
 // Acción para actualizar la cantidad de productos en el carrito
-export const updateCartQuantity = (itemId, quantity) => (dispatch) => {
-  dispatch({ type: UPDATE_CART_QUANTITY, payload: { itemId, quantity } });
+export const updateCartQuantity = (itemId, quantity) => (dispatch, getState) => {
+  dispatch({
+    type: UPDATE_CART_QUANTITY,
+    payload: { itemId, quantity },
+  });
+  // Actualizamos localStorage con el estado actualizado del carrito
+  localStorage.setItem("cart", JSON.stringify(getState().cart.cartItems));
 };

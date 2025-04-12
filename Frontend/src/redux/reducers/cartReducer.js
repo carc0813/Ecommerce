@@ -1,8 +1,8 @@
 import { ADD_TO_CART, REMOVE_FROM_CART, CLEAR_CART,UPDATE_CART_QUANTITY } from "../actions";
-
+const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
 const initialState = {
-  cartItems: [],
-  totalAmount: 0,
+  cartItems: savedCart,
+  totalAmount: savedCart.reduce((total, item) => total + item.price * item.quantity, 0),
 };
 
 export const cartReducer = (state = initialState, action) => {

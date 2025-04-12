@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart, processPurchase, updateCartQuantity, clearCart } from "../redux/actions";
 import { Button, List, ListItem, ListItemText, Typography, Container, Box, Paper, IconButton, TextField } from "@mui/material";
+import { toast } from "react-toastify"; 
 import { Add, Remove } from "@mui/icons-material";
 
 const CartPage = () => {
@@ -11,9 +12,18 @@ const CartPage = () => {
 
   const handleQuantityChange = (item, amount) => {
     const newQuantity = item.quantity + amount;
-    if (newQuantity > 0) {
-      dispatch(updateCartQuantity(item.id, newQuantity));
+    // Si la nueva cantidad es menor a 1, no se permite (o podrías eliminar el item)
+    if (newQuantity < 1) {
+      toast.error("La cantidad no puede ser menor a 1");
+      return;
     }
+    // Verifica que no se exceda el stock disponible
+    if (newQuantity > item.inStock) {
+      toast.error("No hay suficiente stock disponible");
+      return;
+    }
+    // Si todo está en orden, actualiza la cantidad
+    dispatch(updateCartQuantity(item.id, newQuantity));
   };
 
   return (

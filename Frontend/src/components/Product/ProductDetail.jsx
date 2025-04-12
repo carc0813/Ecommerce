@@ -16,17 +16,14 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Box,
 } from "@mui/material";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    product = {},
-    loading,
-    error,
-  } = useSelector((state) => state.products);
+  const { product = {}, loading, error } = useSelector((state) => state.products);
   const baseUrl = "http://localhost:3001/images/";
 
   const imageUrl = product?.images?.[0]
@@ -45,16 +42,22 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) return;
-    dispatch(addToCart({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: 1,
-      size: selectedSize,
-      color: selectedColor,
-      image: imageUrl,
-    }));
+    if (!selectedSize || !selectedColor) {
+      alert("Por favor selecciona una talla y un color");
+      return;
+    }
+    dispatch(
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        quantity: 1,
+        size: selectedSize,
+        color: selectedColor,
+        image: imageUrl,
+        inStock: product.inStock, // Se asume que viene de la BD o se asigna un valor predeterminado
+      })
+    );
   };
 
   return (
@@ -92,67 +95,73 @@ const ProductDetail = () => {
                 sx={{ borderRadius: 2, objectFit: "cover", width: "100%" }}
               />
             </Grid>
-
             <Grid item xs={12} md={6}>
               <CardContent>
-                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                <Typography variant="h4" sx={{ fontWeight: "bold", textAlign: "center" }}>
                   {product.title}
                 </Typography>
                 <Typography variant="body1" sx={{ mt: 2 }}>
                   {product.description}
                 </Typography>
-
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: "bold", color: "green", mt: 2 }}
-                >
+                <Typography variant="h5" sx={{ fontWeight: "bold", color: "green", mt: 2, textAlign: "center" }}>
                   ${product.price}
                 </Typography>
-
-                <Typography
-                  variant="body2"
-                  sx={{ mt: 1, color: product.inStock > 0 ? "green" : "red" }}
-                >
+                <Typography variant="body2" sx={{ mt: 1, textAlign: "center", color: product.inStock > 0 ? "green" : "red" }}>
                   {product.inStock > 0
                     ? `Stock disponible: ${product.inStock}`
                     : "Sin stock"}
                 </Typography>
-
-                <FormControl component="fieldset" sx={{ mt: 2 }}>
-                  <FormLabel component="legend">Talla</FormLabel>
-                  <RadioGroup
-                    row
-                    value={selectedSize}
-                    onChange={(e) => setSelectedSize(e.target.value)}
+                {/* Selección de talla */}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 2 }}>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend" sx={{ textAlign: "center" }}>Talla</FormLabel>
+                    <RadioGroup
+                      row
+                      value={selectedSize}
+                      onChange={(e) => setSelectedSize(e.target.value)}
+                    >
+                      {product.sizes?.map((size) => (
+                        <FormControlLabel
+                          key={size}
+                          value={size}
+                          control={<Radio />}
+                          label={size}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </Box>
+                {/* Selección de color centrado */}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 2 }}>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend" sx={{ textAlign: "center" }}>Color</FormLabel>
+                    <RadioGroup
+                      row
+                      value={selectedColor}
+                      onChange={(e) => setSelectedColor(e.target.value)}
+                    >
+                      {product.colors?.map((color) => (
+                        <FormControlLabel
+                          key={color}
+                          value={color}
+                          control={<Radio />}
+                          label={color}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </Box>
+                {/* Botón de agregar al carrito centrado */}
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!selectedSize || !selectedColor || product.inStock === 0}
+                    onClick={handleAddToCart}
                   >
-                    {product.sizes?.map((size) => (
-                      <FormControlLabel key={size} value={size} control={<Radio />} label={size} />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-
-                <FormControl component="fieldset" sx={{ mt: 2 }}>
-                  <FormLabel component="legend">Color</FormLabel>
-                  <RadioGroup
-                    row
-                    value={selectedColor}
-                    onChange={(e) => setSelectedColor(e.target.value)}
-                  >
-                    {product.colors?.map((color) => (
-                      <FormControlLabel key={color} value={color} control={<Radio />} label={color} />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 3 }}
-                  disabled={!selectedSize || !selectedColor || product.inStock === 0}
-                  onClick={handleAddToCart}
-                >
-                  Agregar al carrito
-                </Button>
+                    Agregar al carrito
+                  </Button>
+                </Box>
               </CardContent>
             </Grid>
           </Grid>

@@ -1,20 +1,21 @@
 const { Router } = require("express");
 
-
-// Configurar los routers
-// Ejemplo: router.use('/auth', authRouter);
+// Rutas existentes
 const productRoutes = require("./products");
 const categoryRoutes = require("./categories");
 const userRoutes = require("./users");
 const authRoutes = require("./auths");
 const cartRoutes = require("./carts");
-
+const orderRoutes = require("./orders");
 
 const router = Router();
 
-router.use("/products", productRoutes);// Ruta para todos los productos 
-router.use("/categories", categoryRoutes);// Ruta para las categorias
-router.use("/users", userRoutes); // Agregar el módulo de usuarios
-router.use("/users", authRoutes); // Ruta para autenticación
-router.use("/carts", cartRoutes);// Ruta para carrito de compras
+router.use("/products", productRoutes);
+router.use("/categories", categoryRoutes);
+router.use("/users", userRoutes);
+router.use("/users", authRoutes); // Puede combinarse según cómo esté armado
+router.use("/carts", cartRoutes);
+router.use("/orders",orderRoutes); // 👈 nueva ruta añadida
+
 module.exports = router;
+
