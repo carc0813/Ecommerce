@@ -15,15 +15,24 @@ const createPaymentIntent = async (req, res) => {
     }
 
     // Aquí podrías validar que el "amount" recibido sea igual al total de la orden
-
+    if (order.totalAmount !== amount) {
+      return res.status(400).json({ message: "Monto incorrecto" });
+    }
+    
+    if (!orderId || !amount || !currency) {
+      return res.status(400).json({ message: "Datos incompletos" });
+    }
     // Crear el Payment Intent en Stripe
     const paymentIntent = await stripe.paymentIntents.create({
-      amount, // el monto en la moneda más pequeña (por ejemplo, centavos)
-      currency, // ej: 'usd' o 'eur'
-      metadata: { orderId }, // puedes enviar información adicional para identificar el pedido
+      amount: amount, // el monto en la moneda más pequeña (por ejemplo, centavos)
+      currency: currency, // ej: 'usd' o 'eur'
+      metadata: {
+        orderId: orderId.toString(),
+      }, // puedes enviar información adicional para identificar el pedido
     });
-
+    console.log("Client Secret generado:", paymentIntent.client_secret); // DEBUG
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
+   
   } catch (error) {
     console.error("Error creando Payment Intent:", error);
     res.status(500).json({ message: "Error al crear el Payment Intent" });
@@ -63,6 +72,10 @@ if (event.type === 'payment_intent.succeeded') {
   
   
   }
+
+  // Eliminar carrito del usuario (si usas una tabla intermedia ProductCart)
+await Cart.destroy({ where: { userId: Order.userId } });
+
   // Otros eventos pueden ser manejados de forma similar
 
   res.json({ received: true });

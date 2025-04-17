@@ -1,6 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode"; // 📌 Instala con: npm install jwt-decode
 import { toast } from "react-toastify";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -23,7 +24,12 @@ export const SORT_PRODUCTS = "SORT_PRODUCTS";
 export const GET_CATEGORIES_SUCCESS = "GET_CATEGORIES_SUCCESS";
 export const GET_CATEGORIES_ERROR = "GET_CATEGORIES_ERROR";
 export const UPDATE_CART_QUANTITY="UPDATE_CART_QUANTITY";
-
+export const CREATE_PAYMENT_INTENT_REQUEST = "CREATE_PAYMENT_INTENT_REQUEST";
+export const CREATE_PAYMENT_INTENT_SUCCESS = "CREATE_PAYMENT_INTENT_SUCCESS";
+export const CREATE_PAYMENT_INTENT_FAIL = "CREATE_PAYMENT_INTENT_FAIL";
+export const PROCESS_PURCHASE_REQUEST = "PROCESS_PURCHASE_REQUEST";
+export const PROCESS_PURCHASE_SUCCESS = "PROCESS_PURCHASE_SUCCESS";
+export const PROCESS_PURCHASE_FAIL = "PROCESS_PURCHASE_FAIL";
 
 //action que sirve para registrarme en la base de datos
 export const register = (userData) => async (dispatch) => {
@@ -224,25 +230,6 @@ export const clearCart = () => (dispatch) => {
 };
 
 
-export const processPurchase = () => async (dispatch, getState) => {
-  try {
-    const { cartItems } = getState().cart;
-
-    await axios.post("http://localhost:3001/orders", { cartItems });
-
-    dispatch(clearCart());
-
-    toast.success("Compra realizada con éxito!", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-  } catch (error) {
-    toast.error("Error en la compra", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-  }
-};
 
 // Acción para actualizar la cantidad de productos en el carrito
 export const updateCartQuantity = (itemId, quantity) => (dispatch, getState) => {
@@ -253,3 +240,46 @@ export const updateCartQuantity = (itemId, quantity) => (dispatch, getState) => 
   // Actualizamos localStorage con el estado actualizado del carrito
   localStorage.setItem("cart", JSON.stringify(getState().cart.cartItems));
 };
+
+//action para el pago Crear intent de pago
+export const createPaymentIntent = (orderId, amount, currency) => async (dispatch) => {
+  try {
+    const { data } = await axios.post("http://localhost:3001/payments/create-intent", {
+      orderId,
+      amount,
+      currency,
+    });
+    dispatch({ type: CREATE_PAYMENT_INTENT_SUCCESS, payload: data.clientSecret });
+  } catch (error) {
+    dispatch({ type: CREATE_PAYMENT_INTENT_FAIL, payload: error.message });
+  }
+};
+
+
+// Procesar compra después del pago
+export const processPurchase = createAsyncThunk(
+  'orders/processPurchase',
+  async ({ cartItems, paymentMethod, userId }, thunkAPI) => {
+    try {
+      const products = cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+        subtotal: item.quantity * item.price
+      }));
+
+      const totalAmount = products.reduce((acc, item) => acc + item.subtotal, 0);
+
+      const response = await axios.post('http://localhost:3001/orders', {
+        userId,
+        products,
+        paymentMethod,
+        totalAmount
+      });
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Error al crear la orden');
+    }
+  }
+);

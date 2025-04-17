@@ -14,6 +14,10 @@ module.exports = (sequelize) => {
     totalAmount: {
       type: DataTypes.FLOAT,
       allowNull: false
-    }
+    },
+    stripeIntentId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 };
