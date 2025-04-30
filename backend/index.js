@@ -17,15 +17,21 @@
 //     =====`-.____`.___ \_____/___.-`___.-'=====
 //                       `=---='
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const server = require("./src/app");
-const { conn } = require("./src/db");
-const preloadData = require('../backend/src/routes/seed');
+// index.js (o server.js, app.js… donde arranques la app)
+require('dotenv').config();            // ← Debe ir *antes* de cualquier otro require
+
+const express = require('express');    // ← Ahora sí requieres Express
+const { conn } = require('./src/db');  // ← Y tu conexión a la base
+const preloadData = require('./src/routes/seed');
+const { createPaymentIntent, handlePaymentWebhook } = require('../backend/src/controllers/paymentController');
+const server = require('./src/app');
+
+// Opcional: log para verificar que la variable está disponible
+console.log("🔑 STRIPE_SECRET_KEY →", process.env.STRIPE_SECRET_KEY?.slice(0, 6) + '…');
 
 conn.sync({ force: true }).then(async () => {
-   //console.log("🔄 Precargando datos...");
   await preloadData();
   server.listen(3001, () => {
-    
-    console.log("%s listening at 3001"); // eslint-disable-line no-console
+    console.log("Servidor escuchando en el puerto 3001");
   });
 });

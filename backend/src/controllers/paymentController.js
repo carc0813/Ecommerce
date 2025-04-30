@@ -1,7 +1,7 @@
 // paymentController.js
 const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_XXXX');
-const { Order, Product } = require('../db'); // Supongamos que tienes un modelo Order para las compras
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY );
+const { Order, Product, Cart, OrderProduct } = require('../db'); // Supongamos que tienes un modelo Order para las compras
 
 // Crear un Payment Intent
 const createPaymentIntent = async (req, res) => {
@@ -18,10 +18,16 @@ const createPaymentIntent = async (req, res) => {
     if (order.totalAmount !== amount) {
       return res.status(400).json({ message: "Monto incorrecto" });
     }
-    
-    if (!orderId || !amount || !currency) {
-      return res.status(400).json({ message: "Datos incompletos" });
+    if (typeof amount !== 'number' || amount <= 0) {
+      return res.status(400).json({ message: "Monto inválido" });
     }
+    if (!orderId) {
+      return res.status(400).json({ message: "orderId inválido" });
+    }
+    if (!currency || typeof currency !== 'string') {
+      return res.status(400).json({ message: "currency inválido" });
+    }
+    
     // Crear el Payment Intent en Stripe
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount, // el monto en la moneda más pequeña (por ejemplo, centavos)
@@ -44,40 +50,52 @@ const handlePaymentWebhook = async (req, res) => {
   let event;
 
   try {
-    // La cabecera 'stripe-signature' valida que la petición provenga de Stripe (recomendado en producción)
     const sig = req.headers['stripe-signature'];
-    // Aquí debes tener la llave del webhook, configurada en Stripe Dashboard
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    console.error("Webhook error:", err.message);
+    console.error("❌ Webhook error:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Manejo de diferentes tipos de eventos
-    // Ejemplo dentro de handlePaymentWebhook:
-if (event.type === 'payment_intent.succeeded') {
+  // 👉 Manejamos evento de pago exitoso
+  if (event.type === 'payment_intent.succeeded') {
     const paymentIntent = event.data.object;
     const orderId = paymentIntent.metadata.orderId;
-    const order = await Order.findByPk(orderId, { include: [Product] });
-    if (order) {
-      order.status = 'paid';
-      await order.save();
-  
-      // Actualizar stock de cada producto
-      for (const product of order.Products) {
-        product.inStock = product.inStock - product.OrderProduct.quantity; // suponiendo una tabla intermedia OrderProduct
-        await product.save();
+
+    try {
+      const order = await Order.findByPk(orderId, { include: [{ model: Product }] });
+
+      if (order) {
+        // 1. Actualizar estado de orden
+        order.status = 'paid';
+        await order.save();
+        console.log(`✅ Orden ${orderId} actualizada a "paid"`);
+
+        // 2. Actualizar stock de productos
+        for (const product of order.Products) {
+          const orderProduct = await OrderProduct.findOne({
+            where: { OrderId: order.id, ProductId: product.id }
+          });
+
+          if (orderProduct) {
+            product.inStock = product.inStock - orderProduct.quantity;
+            await product.save();
+          }
+        }
+
+        // 3. Eliminar carrito del usuario
+        await Cart.destroy({ where: { userId: order.userId } });
+        console.log(`🛒 Carrito del usuario ${order.userId} eliminado`);
+      } else {
+        console.error(`❌ Orden con id ${orderId} no encontrada`);
       }
+
+    } catch (error) {
+      console.error("❌ Error procesando orden:", error.message);
     }
-  
-  
   }
 
-  // Eliminar carrito del usuario (si usas una tabla intermedia ProductCart)
-await Cart.destroy({ where: { userId: Order.userId } });
-
-  // Otros eventos pueden ser manejados de forma similar
-
+  // 👌 Responder a Stripe que recibimos el evento
   res.json({ received: true });
 };
 

@@ -245,15 +245,16 @@ export const updateCartQuantity = (itemId, quantity) => (dispatch, getState) => 
 export const createPaymentIntent = (orderId, amount, currency) => async (dispatch) => {
   try {
     const { data } = await axios.post("http://localhost:3001/payments/create-intent", {
-      orderId,
-      amount,
-      currency,
+      amount: amount, // ✅ usar amount que llega como parámetro
+      currency: currency, // ✅ usar currency que llega como parámetro
+      orderId: orderId,
     });
     dispatch({ type: CREATE_PAYMENT_INTENT_SUCCESS, payload: data.clientSecret });
   } catch (error) {
     dispatch({ type: CREATE_PAYMENT_INTENT_FAIL, payload: error.message });
   }
 };
+
 
 
 // Procesar compra después del pago

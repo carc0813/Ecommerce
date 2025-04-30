@@ -34,77 +34,82 @@ const CheckoutForm = () => {
   useEffect(() => {
     const createOrderAndPaymentIntent = async () => {
       try {
-        // 1. Calcular total desde el carrito
         const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
         const amount = Math.round(total * 100); // en centavos
-
+  
         // 2. Crear la orden en el backend
         const orderRes = await axios.post("http://localhost:3001/orders", {
           userId: parseInt(userId),
           cartItems,
           totalAmount: amount,
         });
-
+  
         const newOrderId = orderRes.data.orderId;
         setOrderId(newOrderId);
-
-        // 3. Crear Payment Intent
+        
+        // ⚡ AQUI la corrección:
         dispatch(createPaymentIntent(newOrderId, amount, "usd"));
+        
       } catch (error) {
         console.error("Error creando orden o payment intent:", error);
         setErrorMsg("No se pudo preparar el pago. Intenta más tarde.");
       }
     };
-
+  
     if (cartItems.length > 0 && userId) {
       createOrderAndPaymentIntent();
     }
   }, [cartItems, dispatch, userId]);
+  
+  
 
   // 💳 Confirmar pago
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
-
-    if (!stripe || !elements) return;
-
-    if (!clientSecret) {
-      setErrorMsg("No se ha generado el clientSecret aún. Por favor espera.");
+  
+    if (!stripe || !elements) {
+      setErrorMsg("Stripe aún no está listo. Por favor espera.");
       return;
     }
-
+  
+    if (!clientSecret) {
+      setErrorMsg("Todavía estamos preparando el pago. Intenta nuevamente en unos segundos.");
+      return;
+    }
+  
     setLoading(true);
-
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-      },
-    });
-
-    if (result.error) {
-      setErrorMsg(result.error.message);
-      setLoading(false);
-    } else {
-      if (result.paymentIntent.status === "succeeded") {
-        try {
-          await dispatch(
-            processPurchase({
-              cartItems,
-              paymentMethod: "stripe",
-              userId: parseInt(userId),
-              orderId,
-            })
-          );
-          dispatch(clearCart());
-          navigate("/payment-success");
-        } catch (err) {
-          setErrorMsg("Error al procesar la compra.");
-        } finally {
-          setLoading(false);
-        }
+  
+    try {
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+      });
+  
+      if (result.error) {
+        setErrorMsg(result.error.message);
+        setLoading(false);
+      } else if (result.paymentIntent.status === "succeeded") {
+        await dispatch(
+          processPurchase({
+            cartItems,
+            paymentMethod: "stripe",
+            userId: parseInt(userId),
+            orderId,
+          })
+        );
+        dispatch(clearCart());
+        navigate("/payment-success", { state: { order: { products: cartItems, totalAmount: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0) } } });
       }
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Error inesperado durante el pago.");
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <Paper

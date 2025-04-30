@@ -1,3 +1,4 @@
+const express = require("express"); // 👈 agregar esta línea
 const { Router } = require("express");
 const { createPaymentIntent, handlePaymentWebhook } = require("../controllers/paymentController");
 
