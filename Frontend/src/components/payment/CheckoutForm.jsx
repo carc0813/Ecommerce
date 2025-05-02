@@ -81,11 +81,14 @@ const CheckoutForm = () => {
     setLoading(true);
   
     try {
-      const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-        },
-      });
+      // En tu CheckoutForm.jsx, dentro de handleSubmit:
+     console.log('🔑 Stripe Key en confirmCardPayment:', stripe._apiKey);
+
+     const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card: elements.getElement(CardElement) },
+    }, { handleActions: false });
+    console.log(result);
+    
   
       if (result.error) {
         setErrorMsg(result.error.message);

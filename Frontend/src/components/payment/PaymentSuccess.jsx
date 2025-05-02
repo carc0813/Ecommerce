@@ -33,16 +33,16 @@ const PaymentSuccess = () => {
           </Typography>
           {order.products.map((product) => (
             <Typography key={product.id}>
-              {product.name} x {product.OrderProduct.quantity}{" "}
-              (${product.price * product.OrderProduct.quantity})
+              {product.name} x {product.quantity} ($
+              {product.price * product.quantity})
             </Typography>
           ))}
         </Box>
 
         <Typography variant="h6">Total: ${order.totalAmount}</Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          El pago fue procesado correctamente. Te hemos enviado un resumen al correo
-          electrónico.
+          El pago fue procesado correctamente. Te hemos enviado un resumen al
+          correo electrónico.
         </Typography>
 
         <Button
@@ -59,5 +59,3 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
-
-

@@ -7,8 +7,7 @@ import { createPaymentIntent } from "../redux/actions";
 import { useLocation } from "react-router-dom";
 import { Box, Container, Typography, Card, CardContent } from "@mui/material";
 
-const stripePromise = loadStripe("pk_test_xxx..."); // 👈 Usa tu PUBLIC KEY aquí
-
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY); // 👈 Usa tu PUBLIC KEY aquí
 
 const CheckoutPage = () => {
   const dispatch = useDispatch();
@@ -24,7 +23,6 @@ const CheckoutPage = () => {
       dispatch(createPaymentIntent(orderId, totalAmount, "usd"));
     }
   }, [dispatch, orderId, totalAmount]);
-  
 
   useEffect(() => {
     console.log("📦 clientSecret desde Redux:", clientSecret);
@@ -44,9 +42,11 @@ const CheckoutPage = () => {
             <Typography variant="h4" component="h2" align="center" gutterBottom>
               Finalizar Compra
             </Typography>
-            <Elements stripe={stripePromise}>
-              <CheckoutForm />
-            </Elements>
+            {clientSecret && (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <CheckoutForm />
+              </Elements>
+            )}
           </CardContent>
         </Card>
       </Box>
@@ -55,5 +55,3 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
-
-
