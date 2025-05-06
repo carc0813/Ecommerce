@@ -63,37 +63,52 @@ const handlePaymentWebhook = async (req, res) => {
     const orderId = paymentIntent.metadata.orderId;
 
     try {
-      const order = await Order.findByPk(orderId, { include: [{ model: Product }] });
-
+      const order = await Order.findByPk(orderId, {
+        include: [
+          {
+            model: Product,
+            through: { attributes: ['quantity'] }
+          }
+        ]
+      });
+    
       if (order) {
-        // 1. Actualizar estado de orden
+        // 1. Actualizar estado de la orden
         order.status = 'paid';
         await order.save();
         console.log(`✅ Orden ${orderId} actualizada a "paid"`);
-
+    
         // 2. Actualizar stock de productos
-        for (const product of order.Products) {
-          const orderProduct = await OrderProduct.findOne({
-            where: { OrderId: order.id, ProductId: product.id }
-          });
+        const productQuantities = {};
 
-          if (orderProduct) {
-            product.inStock = product.inStock - orderProduct.quantity;
-            await product.save();
-          }
-        }
+for (const product of order.Products) {
+  const pid = product.id;
+  const quantity = product.OrderProduct.quantity;
 
-        // 3. Eliminar carrito del usuario
+  if (!productQuantities[pid]) {
+    productQuantities[pid] = { product, quantity };
+  } else {
+    productQuantities[pid].quantity += quantity;
+  }
+}
+
+for (const { product, quantity } of Object.values(productQuantities)) {
+  product.inStock = product.inStock - quantity;
+  if (product.inStock < 0) product.inStock = 0;
+  await product.save();
+}
+
+    
+        // 3. Eliminar carrito del usuario (si aplica)
         await Cart.destroy({ where: { userId: order.userId } });
         console.log(`🛒 Carrito del usuario ${order.userId} eliminado`);
       } else {
         console.error(`❌ Orden con id ${orderId} no encontrada`);
       }
-
     } catch (error) {
       console.error("❌ Error procesando orden:", error.message);
     }
-  }
+  }    
 
   // 👌 Responder a Stripe que recibimos el evento
   res.json({ received: true });
